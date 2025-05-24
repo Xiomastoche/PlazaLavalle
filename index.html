@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- AOS Animation Library --> <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> 
+   <style> 
+   .timeline {
+    position: relative;
+    max-width: 900px;
+    margin: auto;
+    padding: 50px 0;
+  }
+  .timeline::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background-color: #800000;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -2px;
+  }
+  .timeline-item {
+    padding: 20px 30px;
+    position: relative;
+    width: 50%;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .timeline-item.left {
+    left: 0;
+    text-align: right;
+  }
+  .timeline-item.right {
+    left: 50%;
+    text-align: left;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 15px;
+    border-radius: 50%;
+    background: #800000;
+    border: 4px solid white;
+    z-index: 1;
+  }
+  .timeline-item.left::before {
+    right: -10px;
+  }
+  .timeline-item.right::before {
+    left: -10px;
+  }
+  .timeline-content {
+    background: #f3f3f3;
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    max-width: 100%;
+    border-radius: border-box;
+  }
+  .timeline-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .timeline::after {
+      left: 20px;
+    }
+    .timeline-item {
+      width: 100%;
+      padding-left: 50px;
+      padding-right: 25px;
+      text-align: left !important;
+    }
+    .timeline-item.left,
+    .timeline-item.right {
+      left: 0 !important;
+    }
+    .timeline-item::before {
+      left: 10px !important;
+      right: auto !important;
+    }
+    .timeline-content {
+      max-width: 100%;
+    }
+  } </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md sticky-top" style="background-color: rgb(160, 2, 2);">
+        <div class="container-fluid">
+          <a class="navbar-brand px-2" href="#introduccion">CaminArte</a>
+          <button class="navbar-toggler" style="border: none;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon" ></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav" style="font-family: Arial, Helvetica, sans-serif">
+              <li class="nav-item">
+                <a class="nav-link text-white" aria-current="page" href="#introduccion">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="#itinerario">Itinerario</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="#mapa">Mapa</a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <section>
+        <div class="img_fondo" id="introduccion">
+        <div class="container-fluid">
+        <!-- Descripción -->
+        <div class=" text-center pt-5 text-white p-5">
+            <div class="row pt-5">
+                <div class="col">
+                    <p class="fs-5"><strong>VIVÍ EL TEATRO. DESCUBRÍ LA CIUDAD CON NOSOTROS.</strong></p> 
+                    <p >Te invitamos a un recorrido escénico por uno de los rincones más icónicos de Buenos Aires, Plaza Lavalle.</p>
+                    <a href="#mapa" type="button" class="btn btn-outline-dark mt-3">EXPLORAR TEATROS</a>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        <!-- Informacion -->
+        <div class="container-fluid pt-2 pb-4" id="itinerario">
+            <div class="row pt-5">
+                <div class="col">
+                    <h5 class="pb-3 px-2"> <u>Itinerario </u></h5>
+                    <dl class="list-group">
+                        <li class=""> <strong>Localidad:</strong> Ciudad Autónoma de Buenos Aires, zona Plaza Lavalle.</li>
+                        <li> <strong>Hora de encuentro:</strong> 20:20 hs - frente a la estatua <a href="https://maps.app.goo.gl/mcdfSHgciFRsP3c6A" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"> "Homenaje al Ballet Nacional".</a></li>
+                        <li> <strong>Hora de inicio:</strong> 20:30 hs.</li>
+                        <li> <strong>Duración total:</strong> 90 mins.</li>
+                        <li>
+                            <strong>Servicios incluidos:</strong>
+                            <ol style="list-style: none;">
+                                <li> - Guía en español.</li>
+                                <li> - Snack individual.</li>
+                            </ol>
+                        </li>
+                    </dl>
+                </div>
+                <style>
+                    /* Estilos generales para los elementos li de la lista desordenada */
+                    .list-group > li {
+                        margin: 0;
+                    }
+                
+                    /* Media query para pantallas menores que 'md' */
+                    @media (max-width: 767px) { /* Cambia 767px al tamaño que consideres como 'md' */
+                        .list-group > li {
+                            padding-bottom: 5px; /* Ajusta el padding según tus necesidades */
+                            padding-left: 5px;
+                        }
+                        
+                        /* Asegúrate de que los li dentro del ol no tengan padding */
+                        .list-group ol li {
+                            padding: 0; /* Sin padding para los elementos li dentro de ol */
+                        }
+                    }
+                </style>
+                <style>
+
+                </style>
+            </div>
+        </div>
+    
+    </section>
+
+    <section class="timeline">
+
+        <div class="timeline-item left">
+          <div class="timeline-content">
+            <div class="timeline-img pb-3">
+              <img src="https://s.yimg.com/ny/api/res/1.2/HjP.3N4bNwJ5.J185v8nDQ--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQyNw--/https://media.zenfs.com/es/lanacion.com.ar/f7122c4a4e55eb21647f707fc08a4fdd" alt="Plaza Lavalle">
+            </div>
+            <h4>1. Plaza Lavalle</h4>
+            <p>Nos reunimos frente al Monumento “Homenaje al Ballet Nacional”, símbolo de lucha y memoria del arte escénico argentino.</p>
+          </div>
+        </div>
+      
+        <div class="timeline-item right">
+          <div class="timeline-content">
+            <div class="timeline-img pb-3">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Fachada_del_Teatro_Col%C3%B3n_en_Buenos_Aires%2C_Argentina.jpg" alt="Teatro Colón">
+            </div>
+            <h4>2. Teatro Colón</h4>
+            <p>Explicación externa sobre su historia y arquitectura. Uno de los teatros líricos más importantes del mundo.</p>
+          </div>
+        </div>
+      
+        <div class="timeline-item left">
+          <div class="timeline-content">
+            <div class="timeline-img pb-3">
+              <img src="https://buenosaires.gob.ar/sites/default/files/media/image/2014/07/09/9399cd39840ca6e3206f019ab7b33b9a6610e413.jpg" alt="Teatro Nacional Cervantes">
+            </div>
+            <h3>3. Teatro Nacional Cervantes</h3>
+            <p>Único teatro nacional del país, con fachada barroca española y obras de valor cultural.</p>
+          </div>
+        </div>
+      
+        <div class="timeline-item right">
+          <div class="timeline-content">
+            <div class="timeline-img pb-3">
+              <img src="https://argentina-tango.net/wp-content/uploads/2021/01/TANGOPX1.webp" alt="Tango Porteño">
+            </div>
+            <h4>4. Tango Porteño</h4>
+            <p>Sala moderna que combina tango con puestas teatrales diseñadas para turistas.</p>
+          </div>
+        </div>
+      
+        <div class="timeline-item left">
+          <div class="timeline-content">
+            <div class="timeline-img pb-3">
+              <img src="https://pbs.twimg.com/media/GeszRXQXgAAOiCv.jpg" alt="Teatro Broadway">
+            </div>
+            <h4>5. Teatro Broadway</h4>
+            <p>Ícono del teatro comercial porteño sobre la mítica Avenida Corrientes.</p>
+          </div>
+        </div>
+      
+        <div class="timeline-item right" >
+          <div class="timeline-content">
+            <div class="timeline-img pb-3">
+              <img src="https://turismo.buenosaires.gob.ar/sites/turismo/files/teatro-Lola-membrives-1500x610-fachada.jpg" alt="Teatro Lola Membrives">
+            </div>
+            <h4>6. Teatro Lola Membrives</h4>
+            <p>Finalmente, llegaremos al Teatro Lola Membrives, uno de los más antiguos y representativos de la ciudad, con fuerte trayectoria nacional.</p>
+          </div>
+        </div>
+      
+      </section>
+
+    <div class="container-fluid text-center pt-5">
+        <h2 class="pb-4 fs-5"><strong>Mapa del Itinerario</strong></h2>
+        <div id="mapa" style="height: 500px; border-radius: 10px;"></div>
+    </div>
+    <!-- Modal -->
+    <!-- Modal Bootstrap -->
+    <div class="modal fade" id="atractivoModal" tabindex="-1" aria-labelledby="atractivoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="atractivoModalLabel"></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <img id="atractivoImagen" src="" alt="Imagen del atractivo" class="modal-img">
+            </div>
+            <div class="modal-footer flex-column ">
+                <small id="atractivoDireccion" class="text-muted"></small>
+                
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="atractivoWeb" target="_blank" class="btn btn-outline-dark btn-sm mt-3"> Ir al sitio web</a>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    <footer class="footer text-center">
+        <div class="container-fluid">
+            <div class="row">
+                
+                <div class="col">
+                    <p class="pt-3">© Copyright CaminArte</p>
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <p style="font-size: 12px;"> <strong>Grupo:</strong> Castillo Castro Lucia |
+                    Composto Sofia De Los Milagros |
+                     Curti Sofia |
+                     Diaz Sofia Aylen |
+                     Fontela Lara |
+                     Noberasco Lucia |
+                    Perez De La Cruz Alice Menibeth |
+                    Stochetta Xiomara Wanda</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  var mapa = L.map('mapa').setView([-34.6037, -58.3816], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(mapa);
+
+  const atractivos = [
+    {
+      nombre: "1. Punto de Encuentro: Homenaje al Ballet Nacional",
+      coords: [-34.60174, -58.38474],
+      imagen: "https://s.yimg.com/ny/api/res/1.2/HjP.3N4bNwJ5.J185v8nDQ--/YXBwaWQ9aGlnaGxhbmRlcjt3PTY0MDtoPTQyNw--/https://media.zenfs.com/es/lanacion.com.ar/f7122c4a4e55eb21647f707fc08a4fdd",
+      direccion: "Dirección: Libertad 550 594",
+    },
+    {
+      nombre: "2. Teatro Colón",
+      coords: [-34.6012, -58.3827],
+      imagen: "https://upload.wikimedia.org/wikipedia/commons/8/82/Fachada_del_Teatro_Col%C3%B3n_en_Buenos_Aires%2C_Argentina.jpg",
+        direccion: "Dirección: Av. Corrientes 1695",
+        web: "https://teatrocolon.org.ar/"
+    },
+    {
+      nombre: "3. Teatro Nacional Cervantes",
+      coords: [-34.5995, -58.3854],
+      imagen: "https://buenosaires.gob.ar/sites/default/files/media/image/2014/07/09/9399cd39840ca6e3206f019ab7b33b9a6610e413.jpg",
+      direccion: "Dirección: Libertad 815",
+      web: "https://www.teatrocervantes.gob.ar/"
+    },
+    {
+      nombre: "4. Teatro Tango Porteño",
+      coords: [-34.6011, -58.3822],
+      imagen: "https://argentina-tango.net/wp-content/uploads/2021/01/TANGOPX1.webp",
+      direccion: "Dirección: Cerrito 570",
+      web: "https://tangoporteno.com.ar/esp/nuestro-show"
+    },
+    {
+      nombre: "5.Teatro Broadway",
+      coords: [-34.6031, -58.3893],
+      imagen: "https://pbs.twimg.com/media/GeszRXQXgAAOiCv.jpg",
+      direccion: "Dirección: Av. Corrientes 1155",
+      web: "https://teatrobroadwayba.com.ar/"
+    },
+    {
+      nombre: "6.Teatro Lola Membrives",
+      coords: [-34.6042, -58.3904],
+      imagen: "https://turismo.buenosaires.gob.ar/sites/turismo/files/teatro-Lola-membrives-1500x610-fachada.jpg",
+      direccion: "Dirección: Av. Corrientes 1280",
+      web: "https://www.lolamembrives.com/"
+    }
+  ];
+  
+
+  const modal = new bootstrap.Modal(document.getElementById('atractivoModal'));
+
+  atractivos.forEach((lugar) => {
+    L.marker(lugar.coords).addTo(mapa)
+      .bindTooltip(lugar.nombre) // Nombre al pasar el cursor
+
+      .on('click', () => {
+
+        document.getElementById('atractivoModalLabel').innerText = lugar.nombre;
+
+        document.getElementById('atractivoImagen').src = lugar.imagen;
+        document.getElementById('atractivoDireccion').innerText = lugar.direccion;
+        document.getElementById('atractivoWeb').href = lugar.web;
+        const webBtn = document.getElementById('atractivoWeb');
+  if (lugar.web) {
+    webBtn.href = lugar.web;
+    webBtn.style.display = 'inline-block';
+  } else {
+    webBtn.style.display = 'none';
+  }
+        modal.show();
+      });
+  });
+</script>
+<script>
+    const items = document.querySelectorAll('.timeline-item');
+    let lastScrollTop = 0;
+    const appeared = new Set();
+  
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollingDown = scrollTop > lastScrollTop;
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+  
+      items.forEach((item, idx) => {
+        const rect = item.getBoundingClientRect();
+        const itemTop = rect.top + window.pageYOffset;
+        const windowBottom = scrollTop + window.innerHeight;
+  
+        // Aparece solo si se hace scroll hacia abajo y el item está visible
+        if (scrollingDown && windowBottom > itemTop + 50) {
+          if (!appeared.has(idx)) {
+            item.classList.add('visible');
+            appeared.add(idx);
+          }
+        }
+        // Si scroll hacia arriba, se oculta el item si ya apareció
+        else if (!scrollingDown && appeared.has(idx)) {
+          item.classList.remove('visible');
+          appeared.delete(idx);
+        }
+      });
+    });
+  </script>
+
+  
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script> <script> AOS.init({ duration: 1000, once: true }); </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script> <script> AOS.init({ duration: 1000, once: true }); </script>
+ 
+</body>
+</html>
