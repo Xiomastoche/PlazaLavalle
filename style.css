@@ -14,11 +14,14 @@
     
 }
 
+.bg-warning {
+    background: linear-gradient(to bottom, white, #ffc107);
+}
 
 .footer {
     background-color: rgb(153, 16, 16);
     padding-top: 20px;
-    margin-top: 50px;
+    margin-top: 0px;
 }
 
 #mapa {
